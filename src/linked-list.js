@@ -36,11 +36,41 @@ class LinkedList {
         return null;
     }
 
-    at(index) {}
+    at(index) {
+        let node = this._head;
+        for (let i = 0; i < index; i++) {
+            node = node.next;
+        }
+        return node.data;
+    }
 
-    insertAt(index, data) {}
+    insertAt(index, data) {
+        if (index >= this.length) {
+            return this.append(data);
+        }
+        let newNode = new Node(data);
+        let node = this._head;
 
-    isEmpty() {}
+        for (let i = 0; i < index; i++) {
+            node = node.next;
+        }
+
+        if (node.prev === null) {
+            this._head = newNode;
+            newNode.next = node;
+            node.prev = newNode;
+            return;
+        }
+
+        node.prev.next = newNode;
+        newNode.prev = node.prev;
+        newNode.next = node;
+        node.prev = newNode;
+    }
+
+    isEmpty() {
+        return this.length === 0;
+    }
 
     clear() {
         this._head = null;
@@ -48,11 +78,46 @@ class LinkedList {
         this.length = 0;
     }
 
-    deleteAt(index) {}
+    deleteAt(index) {
+        let node = this._head;
+        if (node === null || (node.next === null && node.prev === null)) {
+            this._head = null;
+            this._tail = null;
+        } else {
+            for (let i = 0; i < index; i++) {
+                node = node.next;
+            }
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+        }
 
-    reverse() {}
+        this.length--;
 
-    indexOf(data) {}
+        return this;
+    }
+
+    reverse() {
+        let currNode = this._head;
+        if (currNode === null || currNode.next === null) return this;
+        while (currNode !== null) {
+            let tempNode = currNode.prev;
+            currNode.prev = currNode.next;
+            currNode.next = tempNode;
+            currNode = currNode.prev;
+        }
+        [this._head, this._tail] = [this._tail, this._head];
+
+        return this;
+    }
+
+    indexOf(data) {
+        let node = this._head;
+        for (let i = 0; i < this.length; i++) {
+            if (node.data === data) return i;
+            node = node.next;
+        }
+        return -1;
+    }
 }
 
 module.exports = LinkedList;
